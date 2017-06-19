@@ -264,12 +264,12 @@ def main(_):
 python create_event_tf_record.py \
     --dataset_name="event_test" \
     --dataset_dir="/Users/ahmetkucuk/Documents/Research/solim_class/Bbox_Data" \
-    --output_dir="/Users/ahmetkucuk/Documents/Research/solim_class/tf_records_detection"
+    --output_dir="/Users/ahmetkucuk/Documents/Research/solim_class/tf_records_detection_clean"
 
 python create_event_tf_record.py \
     --dataset_name="event_train" \
     --dataset_dir="/home/ahmet/workspace/data/full_disk_171" \
-    --output_dir="/home/ahmet/workspace/data/full_disk_171_detection_tfrecords"
+    --output_dir="/home/ahmet/workspace/data/full_disk_171_detection_clean_tfrecords"
 '''
 
 if __name__ == '__main__':
