@@ -152,7 +152,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
       height: integer, image height in pixels.
       width: integer, image width in pixels.
     """
-    filename = "/Users/ahmetkucuk/Documents/Research/solim_class/Bbox_Data/2012_01_01_04_00_00_171.jpg"
+    #filename = "/Users/ahmetkucuk/Documents/Research/solim_class/Bbox_Data/2012_01_01_04_00_00_171.jpg"
     with tf.gfile.GFile(filename) as fid:
         encoded_jpg = fid.read()
         encoded_jpg_io = io.BytesIO(encoded_jpg)
@@ -263,12 +263,12 @@ def main(_):
 python create_event_tf_record.py \
     --dataset_name="event_test" \
     --dataset_dir="/Users/ahmetkucuk/Documents/Research/solim_class/Bbox_Data" \
-    --output_dir="/Users/ahmetkucuk/Documents/Research/solim_class/tf_records_detection_clean"
+    --output_dir="/Users/ahmetkucuk/Documents/Research/solim_class/tf_records_detection_clean_dif0"
 
 python create_event_tf_record.py \
     --dataset_name="event_train" \
     --dataset_dir="/home/ahmet/workspace/data/full_disk_171" \
-    --output_dir="/home/ahmet/workspace/data/full_disk_171_detection_clean_tfrecords"
+    --output_dir="/home/ahmet/workspace/data/full_disk_171_detection_clean_dif0_tfrecords"
 '''
 
 if __name__ == '__main__':
