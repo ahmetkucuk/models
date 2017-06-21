@@ -123,7 +123,6 @@ def read_event_records(path_to_records, dataset_type):
             if ratio < 0.5:
                 continue
 
-
             image_name = os.path.join(path_to_records, tuples[5] + "_171.jpg")
             if not image_name in bbox_map.keys():
                 bbox_map[image_name] = [bbox]
@@ -153,7 +152,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
       height: integer, image height in pixels.
       width: integer, image width in pixels.
     """
-
+    filename = "/Users/ahmetkucuk/Documents/Research/solim_class/Bbox_Data/2012_01_01_04_00_00_171.jpg"
     with tf.gfile.GFile(filename) as fid:
         encoded_jpg = fid.read()
         encoded_jpg_io = io.BytesIO(encoded_jpg)
@@ -184,7 +183,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         ymax.append(float(bbox[1]) / 4096.0)
 
     for i in range(len(labels)):
-        difficult_obj.append(1)
+        difficult_obj.append(0)
         truncated.append(0)
         poses.append('')
 
