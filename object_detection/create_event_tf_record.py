@@ -281,7 +281,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         'image/filename': dataset_util.bytes_feature(filename),
         'image/source_id': dataset_util.bytes_feature(filename),
         'image/key/sha256': dataset_util.bytes_feature(key),
-        'image/encoded': dataset_util.bytes_feature(image),
+        'image/encoded': dataset_util.bytes_feature(encoded_jpg),
         'image/format': dataset_util.bytes_feature('jpeg'),
         'image/object/bbox/xmin': dataset_util.float_list_feature(xmin),
         'image/object/bbox/xmax': dataset_util.float_list_feature(xmax),
@@ -364,8 +364,8 @@ python create_event_tf_record.py \
 
 python create_event_tf_record.py \
     --dataset_name="event_train" \
-    --dataset_dir="/home/ahmet/workspace/data/full_disk_171" \
-    --output_dir="/home/ahmet/workspace/data/full_disk_171_detection_clean_dif0_tfrecords"
+    --dataset_dir="/home/ahmet/workspace/solar-image-extractor/full-disk-detection/data_new/" \
+    --output_dir="/home/ahmet/workspace/solar-image-extractor/full-disk-detection/tfrecord_new"
 '''
 
 if __name__ == '__main__':
