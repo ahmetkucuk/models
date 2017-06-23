@@ -55,6 +55,7 @@ import hashlib
 import io
 import numpy as np
 from sklearn.utils import shuffle
+from cStringIO import StringIO
 
 flags = tf.app.flags
 flags.DEFINE_string('dataset_dir', '', 'Root directory to raw pet dataset.')
@@ -236,15 +237,17 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
     if image is None:
         return
 
-    key = hashlib.sha256(image.tobytes()).hexdigest()
+    image = Image.fromarray(image, "RGB")
+    image.thumbnail((512, 512), Image.ANTIALIAS)
+    image.save("temp.jpg")
 
-    # with tf.gfile.GFile(filename) as fid:
-    #     encoded_jpg = fid.read()
-    #     encoded_jpg_io = io.BytesIO(encoded_jpg)
-    #     image = Image.open(encoded_jpg_io)
-    #     if image.format != 'JPEG':
-    #         raise ValueError('Image format not JPEG')
-    #     key = hashlib.sha256(encoded_jpg).hexdigest()
+    with tf.gfile.GFile("temp.jpg") as fid:
+        encoded_jpg = fid.read()
+        encoded_jpg_io = io.BytesIO(encoded_jpg)
+        image = Image.open(encoded_jpg_io)
+        if image.format != 'JPEG':
+            raise ValueError('Image format not JPEG')
+        key = hashlib.sha256(encoded_jpg).hexdigest()
 
     if len(bboxes) != len(labels):
         raise ValueError("length of bboxes and labels are not same")
@@ -278,7 +281,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         'image/filename': dataset_util.bytes_feature(filename),
         'image/source_id': dataset_util.bytes_feature(filename),
         'image/key/sha256': dataset_util.bytes_feature(key),
-        'image/encoded': dataset_util.bytes_feature(encoded_jpg),
+        'image/encoded': dataset_util.bytes_feature(image),
         'image/format': dataset_util.bytes_feature('jpeg'),
         'image/object/bbox/xmin': dataset_util.float_list_feature(xmin),
         'image/object/bbox/xmax': dataset_util.float_list_feature(xmax),
@@ -290,6 +293,8 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         'image/object/truncated': dataset_util.int64_list_feature(truncated),
         'image/object/view': dataset_util.bytes_list_feature(poses),
     }))
+
+    tf.gfile.Remove("temp.jpg")
 
     return example
 
@@ -303,7 +308,8 @@ def _add_to_tfrecord(name, bboxes, labels, labels_txts, tfrecord_writer):
       tfrecord_writer: The TFRecord writer to use for writing.
     """
     example = _process_image_and_create_example(name, bboxes, labels, labels_txts)
-    tfrecord_writer.write(example.SerializeToString())
+    if example is not None:
+        tfrecord_writer.write(example.SerializeToString())
 
 
 def run(dataset_dir, output_dir, name='event_train', shuffling=True):
@@ -348,7 +354,13 @@ def main(_):
 python create_event_tf_record.py \
     --dataset_name="event_test" \
     --dataset_dir="/Users/ahmetkucuk/Documents/Research/solim_class/Bbox_Data" \
-    --output_dir="/Users/ahmetkucuk/Documents/Research/solim_class/tf_records_detection_clean_dif0"
+    --output_dir="/Users/ahmetkucuk/Documents/Research/solim_class/tf_records_detection"
+
+python create_event_tf_record.py \
+    --dataset_name="event_train" \
+    --dataset_dir="/home/ahmet/workspace/data/full_disk_171" \
+    --output_dir="/home/ahmet/workspace/data/full_disk_171_detection_clean_dif0_tfrecords"
+
 
 python create_event_tf_record.py \
     --dataset_name="event_train" \
