@@ -53,6 +53,7 @@ from utils import dataset_util
 from PIL import Image
 import hashlib
 import io
+import numpy as np
 from sklearn.utils import shuffle
 
 flags = tf.app.flags
@@ -67,6 +68,34 @@ DIRECTORY_IMAGES = 'JPEGImages/'
 
 # TFRecords convertion parameters.
 RANDOM_SEED = 4242
+
+ORIGINAL_IMAGE_SIZE = 2048
+CROPPED_IMAGE_SIZE = 1400
+START_X = (ORIGINAL_IMAGE_SIZE - CROPPED_IMAGE_SIZE) / 2
+START_Y = (ORIGINAL_IMAGE_SIZE - CROPPED_IMAGE_SIZE) / 2
+
+
+def _check_if_not_inside_cropped_image(bbox):
+
+    bbox = [i / (4096 / ORIGINAL_IMAGE_SIZE) for i in bbox]
+    x1 = bbox[0]
+    y1 = bbox[1]
+    x2 = bbox[2]
+    y2 = bbox[3]
+
+    if x1 < START_X or x1 > START_X + CROPPED_IMAGE_SIZE:
+        return True
+
+    if x2 < START_X or x2 > START_X + CROPPED_IMAGE_SIZE:
+        return True
+
+    if y1 < START_Y or y1 > START_Y + CROPPED_IMAGE_SIZE:
+        return True
+
+    if y2 < START_Y or y2 > START_Y + CROPPED_IMAGE_SIZE:
+        return True
+
+    return False
 
 
 def read_event_records(path_to_records, dataset_type):
@@ -109,6 +138,11 @@ def read_event_records(path_to_records, dataset_type):
             bbox = tuples[4]
             bbox = [float(i) for i in bbox.split("-")]
 
+            if _check_if_not_inside_cropped_image(bbox):
+                continue
+
+            bbox = [(i - START_X) for i in bbox]
+
             width = abs(bbox[0] - bbox[2])
             height = abs(bbox[1] - bbox[3])
 
@@ -123,7 +157,7 @@ def read_event_records(path_to_records, dataset_type):
             if ratio < 0.5:
                 continue
 
-            image_name = os.path.join(path_to_records, tuples[5] + "_171.jpg")
+            image_name = os.path.join(path_to_records, tuples[5])
             if not image_name in bbox_map.keys():
                 bbox_map[image_name] = [bbox]
                 label_map[image_name] = [label]
@@ -141,6 +175,49 @@ def read_event_records(path_to_records, dataset_type):
     return images, data, labels, label_txts
 
 
+def _check_if_exist(filename):
+    return tf.gfile.Exists(filename)
+
+
+def _crop_image(img_data):
+    return img_data[START_X:START_X+CROPPED_IMAGE_SIZE, START_Y:START_Y+CROPPED_IMAGE_SIZE]
+
+
+def _create_multi_wavelength_image(base_filename):
+
+    file131 = base_filename + "_131.jpg"
+    file171 = base_filename + "_171.jpg"
+    file193 = base_filename + "_193.jpg"
+
+    if not (_check_if_exist(file131) and _check_if_exist(file171) and _check_if_exist(file193)):
+        return None
+
+    img131 = Image.open(file131)
+    img131.load()
+    data131 = np.asarray(img131, dtype="uint8")
+    data131 = _crop_image(data131)
+
+    img171 = Image.open(file171)
+    img171.load()
+    data171 = np.asarray(img171, dtype="uint8")
+    data171 = _crop_image(data171)
+
+    img193 = Image.open(file193)
+    img193.load()
+    data193 = np.asarray(img193, dtype="uint8")
+    data193 = _crop_image(data193)
+
+    rgbArray = np.zeros((CROPPED_IMAGE_SIZE, CROPPED_IMAGE_SIZE, 3), 'uint8')
+    # rgbArray = np.zeros((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE, 3), 'uint8')
+
+    rgbArray[..., 0] = data131
+    rgbArray[..., 1] = data171
+    rgbArray[..., 2] = data193
+    # img = Image.fromarray(rgbArray, mode="RGB")
+    # img.save("/Users/ahmetkucuk/Documents/cropped.jpg")
+    return rgbArray
+
+
 def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
     """Process a image and annotation file.
 
@@ -153,13 +230,21 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
       width: integer, image width in pixels.
     """
     #filename = "/Users/ahmetkucuk/Documents/Research/solim_class/Bbox_Data/2012_01_01_04_00_00_171.jpg"
-    with tf.gfile.GFile(filename) as fid:
-        encoded_jpg = fid.read()
-        encoded_jpg_io = io.BytesIO(encoded_jpg)
-        image = Image.open(encoded_jpg_io)
-        if image.format != 'JPEG':
-            raise ValueError('Image format not JPEG')
-        key = hashlib.sha256(encoded_jpg).hexdigest()
+
+    image = _create_multi_wavelength_image(filename)
+
+    if image is None:
+        return
+
+    key = hashlib.sha256(image.tobytes()).hexdigest()
+
+    # with tf.gfile.GFile(filename) as fid:
+    #     encoded_jpg = fid.read()
+    #     encoded_jpg_io = io.BytesIO(encoded_jpg)
+    #     image = Image.open(encoded_jpg_io)
+    #     if image.format != 'JPEG':
+    #         raise ValueError('Image format not JPEG')
+    #     key = hashlib.sha256(encoded_jpg).hexdigest()
 
     if len(bboxes) != len(labels):
         raise ValueError("length of bboxes and labels are not same")
