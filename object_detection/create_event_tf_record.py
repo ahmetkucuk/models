@@ -275,6 +275,8 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         truncated.append(0)
         poses.append('')
 
+    print(labels_txts)
+
     example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': dataset_util.int64_feature(shape[0]),
         'image/width': dataset_util.int64_feature(shape[1]),
