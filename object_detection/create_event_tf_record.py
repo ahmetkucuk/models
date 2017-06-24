@@ -71,7 +71,7 @@ DIRECTORY_IMAGES = 'JPEGImages/'
 RANDOM_SEED = 4242
 
 ORIGINAL_IMAGE_SIZE = 2048
-CROPPED_IMAGE_SIZE = 1400
+CROPPED_IMAGE_SIZE = 1600
 START_X = (ORIGINAL_IMAGE_SIZE - CROPPED_IMAGE_SIZE) / 2
 START_Y = (ORIGINAL_IMAGE_SIZE - CROPPED_IMAGE_SIZE) / 2
 
@@ -147,7 +147,7 @@ def read_event_records(path_to_records, dataset_type):
             width = abs(bbox[0] - bbox[2])
             height = abs(bbox[1] - bbox[3])
 
-            if width < 16*16 or height < 16*16:
+            if width < 16*8 or height < 16*8:
                 continue
 
             if width > height:
@@ -366,8 +366,8 @@ python create_event_tf_record.py \
 
 python create_event_tf_record.py \
     --dataset_name="event_train" \
-    --dataset_dir="/home/ahmet/workspace/solar-image-extractor/full-disk-detection/data_new/" \
-    --output_dir="/home/ahmet/workspace/solar-image-extractor/full-disk-detection/tfrecord_new"
+    --dataset_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/data_new/" \
+    --output_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/tfrecord_tmp"
 '''
 
 if __name__ == '__main__':
