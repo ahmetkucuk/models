@@ -139,7 +139,7 @@ def read_event_records(path_to_records, dataset_type):
             bbox = tuples[4]
             bbox = [float(i) for i in bbox.split("-")]
 
-            if _check_if_not_inside_cropped_image(bbox):
+            if _check_if_not_inside_cropped_image(bbox[:]):
                 continue
 
             bbox = [(i - START_X) for i in bbox]
@@ -253,7 +253,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         raise ValueError("length of bboxes and labels are not same")
 
     # Read the XML annotation file.
-    shape = [512, 512, 1]
+    shape = [512, 512, 3]
     # Find annotations.
     difficult_obj = []
     truncated = []
