@@ -266,7 +266,8 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
     xmax = []
     ymax = []
     for bbox in bboxes:
-
+        print(bbox)
+        print([i*CROPPED_IMAGE_SIZE for i in bbox])
         xmin.append(float(bbox[0]))
         ymin.append(float(bbox[3]))
         xmax.append(float(bbox[2]))
