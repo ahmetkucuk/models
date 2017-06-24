@@ -367,7 +367,7 @@ python create_event_tf_record.py \
 python create_event_tf_record.py \
     --dataset_name="event_train" \
     --dataset_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/data_new/" \
-    --output_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/tfrecord_tmp"
+    --output_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/tfrecord_1600"
 '''
 
 if __name__ == '__main__':
