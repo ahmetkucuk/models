@@ -39,7 +39,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="trainer.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="trainer.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/object_detection/trainer.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="275">
@@ -59,11 +59,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="faster_rcnn_resnet101_pets.config" pinned="false" current-in-tab="false">
+      <file leaf-file-name="faster_rcnn_resnet101_pets.config" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/object_detection/samples/event/faster_rcnn_resnet101_pets.config">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="110" column="34" selection-start-line="110" selection-start-column="34" selection-end-line="110" selection-end-column="34" />
+            <state relative-caret-position="263">
+              <caret line="110" column="28" selection-start-line="110" selection-start-column="28" selection-end-line="110" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -173,8 +173,8 @@
         <option value="$PROJECT_DIR$/object_detection/data/event_label_map.pbtxt" />
         <option value="$PROJECT_DIR$/object_detection/samples/event/ssd_mobilenet_v1_pets.config" />
         <option value="$PROJECT_DIR$/object_detection/create_event_tf_record_test.py" />
-        <option value="$PROJECT_DIR$/object_detection/samples/event/faster_rcnn_resnet101_pets.config" />
         <option value="$PROJECT_DIR$/object_detection/create_event_tf_record.py" />
+        <option value="$PROJECT_DIR$/object_detection/samples/event/faster_rcnn_resnet101_pets.config" />
       </list>
     </option>
   </component>
@@ -1249,12 +1249,12 @@
       <workItem from="1497996787026" duration="4912000" />
       <workItem from="1498103118020" duration="5314000" />
       <workItem from="1498182556858" duration="8606000" />
-      <workItem from="1498281958898" duration="7433000" />
+      <workItem from="1498281958898" duration="7867000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="171868000" />
+    <option name="totallyTimeSpent" value="172302000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="773" extended-state="0" />
@@ -1663,14 +1663,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/object_detection/samples/event/faster_rcnn_resnet101_pets.config">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="110" column="34" selection-start-line="110" selection-start-column="34" selection-end-line="110" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/object_detection/create_event_tf_record_test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -1693,6 +1685,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="275">
           <caret line="218" column="64" selection-start-line="218" selection-start-column="64" selection-end-line="218" selection-end-column="64" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/object_detection/samples/event/faster_rcnn_resnet101_pets.config">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="263">
+          <caret line="110" column="28" selection-start-line="110" selection-start-column="28" selection-end-line="110" selection-end-column="28" />
           <folding />
         </state>
       </provider>

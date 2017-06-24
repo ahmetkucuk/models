@@ -142,7 +142,7 @@ def read_event_records(path_to_records, dataset_type):
             if _check_if_not_inside_cropped_image(bbox[:]):
                 continue
 
-            bbox = [(i - START_X) for i in bbox]
+            bbox = [((i - START_X) + 0.0001) for i in bbox]
 
             width = abs(bbox[0] - bbox[2])
             height = abs(bbox[1] - bbox[3])
@@ -157,6 +157,8 @@ def read_event_records(path_to_records, dataset_type):
 
             if ratio < 0.5:
                 continue
+
+            bbox = [((i/2)/CROPPED_IMAGE_SIZE) for i in bbox]
 
             image_name = os.path.join(path_to_records, tuples[5])
             if not image_name in bbox_map.keys():
@@ -265,10 +267,10 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
     ymax = []
     for bbox in bboxes:
 
-        xmin.append(float(bbox[0]) / 4096.0)
-        ymin.append(float(bbox[3]) / 4096.0)
-        xmax.append(float(bbox[2]) / 4096.0)
-        ymax.append(float(bbox[1]) / 4096.0)
+        xmin.append(float(bbox[0]))
+        ymin.append(float(bbox[3]))
+        xmax.append(float(bbox[2]))
+        ymax.append(float(bbox[1]))
 
     for i in range(len(labels)):
         difficult_obj.append(0)
