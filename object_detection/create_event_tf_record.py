@@ -78,22 +78,21 @@ START_Y = (ORIGINAL_IMAGE_SIZE - CROPPED_IMAGE_SIZE) / 2
 
 def _check_if_not_inside_cropped_image(bbox):
 
-    bbox = [i / (4096 / ORIGINAL_IMAGE_SIZE) for i in bbox]
     x1 = bbox[0]
     y1 = bbox[1]
     x2 = bbox[2]
     y2 = bbox[3]
 
-    if x1 < START_X or x1 > START_X + CROPPED_IMAGE_SIZE:
+    if x1 <= 0 or x1 >= CROPPED_IMAGE_SIZE:
         return True
 
-    if x2 < START_X or x2 > START_X + CROPPED_IMAGE_SIZE:
+    if x2 <= 0 or x2 >= CROPPED_IMAGE_SIZE:
         return True
 
-    if y1 < START_Y or y1 > START_Y + CROPPED_IMAGE_SIZE:
+    if y1 <= 0 or y1 >= CROPPED_IMAGE_SIZE:
         return True
 
-    if y2 < START_Y or y2 > START_Y + CROPPED_IMAGE_SIZE:
+    if y2 <= 0 or y2 >= CROPPED_IMAGE_SIZE:
         return True
 
     return False
@@ -139,10 +138,10 @@ def read_event_records(path_to_records, dataset_type):
             bbox = tuples[4]
             bbox = [float(i) for i in bbox.split("-")]
 
+            bbox = [(((i / 2) - START_X) + 0.00001) for i in bbox]
+
             if _check_if_not_inside_cropped_image(bbox[:]):
                 continue
-
-            bbox = [((i - START_X) + 0.0001) for i in bbox]
 
             width = abs(bbox[0] - bbox[2])
             height = abs(bbox[1] - bbox[3])
@@ -158,7 +157,7 @@ def read_event_records(path_to_records, dataset_type):
             if ratio < 0.5:
                 continue
 
-            bbox = [((i/2)/CROPPED_IMAGE_SIZE) for i in bbox]
+            bbox = [(i/CROPPED_IMAGE_SIZE) for i in bbox]
 
             image_name = os.path.join(path_to_records, tuples[5])
             if not image_name in bbox_map.keys():
