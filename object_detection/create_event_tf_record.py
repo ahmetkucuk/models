@@ -79,9 +79,9 @@ START_Y = (ORIGINAL_IMAGE_SIZE - CROPPED_IMAGE_SIZE) / 2
 def _check_if_not_inside_cropped_image(bbox):
 
     x1 = bbox[0]
-    y1 = bbox[1]
+    y2 = bbox[1]
     x2 = bbox[2]
-    y2 = bbox[3]
+    y1 = bbox[3]
 
     if x1 <= 0 or x1 >= CROPPED_IMAGE_SIZE:
         return True
