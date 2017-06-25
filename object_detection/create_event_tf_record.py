@@ -70,7 +70,7 @@ DIRECTORY_IMAGES = 'JPEGImages/'
 # TFRecords convertion parameters.
 RANDOM_SEED = 4242
 
-ORIGINAL_IMAGE_SIZE = 4096
+ORIGINAL_IMAGE_SIZE = 2048
 
 def read_event_records(path_to_records, dataset_type):
 
@@ -199,6 +199,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         return
 
     image = Image.fromarray(image, "RGB")
+    image.thumbnail((2048, 2048), Image.ANTIALIAS)
     image.save("temp.jpg")
 
     with tf.gfile.GFile("temp.jpg") as fid:
@@ -324,7 +325,7 @@ python create_event_tf_record.py \
 python create_event_tf_record.py \
     --dataset_name="event_train" \
     --dataset_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/data_new/" \
-    --output_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/tfrecord_1600"
+    --output_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/tfrecord_4096"
 '''
 
 if __name__ == '__main__':
