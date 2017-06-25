@@ -70,7 +70,7 @@ DIRECTORY_IMAGES = 'JPEGImages/'
 # TFRecords convertion parameters.
 RANDOM_SEED = 4242
 
-ORIGINAL_IMAGE_SIZE = 2048
+ORIGINAL_IMAGE_SIZE = 4096
 
 def read_event_records(path_to_records, dataset_type):
 
