@@ -161,14 +161,17 @@ def _create_multi_wavelength_image(base_filename):
 
     img131 = Image.open(file131)
     img131.load()
+    img131.thumbnail((2048, 2048), Image.ANTIALIAS)
     data131 = np.asarray(img131, dtype="uint8")
 
     img171 = Image.open(file171)
     img171.load()
+    img171.thumbnail((2048, 2048), Image.ANTIALIAS)
     data171 = np.asarray(img171, dtype="uint8")
 
     img193 = Image.open(file193)
     img193.load()
+    img193.thumbnail((2048, 2048), Image.ANTIALIAS)
     data193 = np.asarray(img193, dtype="uint8")
 
     rgbArray = np.zeros((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE, 3), 'uint8')
@@ -325,7 +328,7 @@ python create_event_tf_record.py \
 python create_event_tf_record.py \
     --dataset_name="event_train" \
     --dataset_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/data_new/" \
-    --output_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/tfrecord_4096"
+    --output_dir="/home/ahmet/workspace/event-detection-data/full-disk-detection/tfrecord_2048"
 '''
 
 if __name__ == '__main__':

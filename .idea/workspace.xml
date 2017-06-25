@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dc113578-b5fc-4f9d-8a45-fbb73e642b2d" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/object_detection/create_event_tf_record.py" afterPath="$PROJECT_DIR$/object_detection/create_event_tf_record.py" />
     </list>
     <ignored path="models.iws" />
@@ -30,8 +31,8 @@
       <file leaf-file-name="create_event_tf_record.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/object_detection/create_event_tf_record.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1945">
-              <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+            <state relative-caret-position="356">
+              <caret line="324" column="0" selection-start-line="324" selection-start-column="0" selection-end-line="327" selection-end-column="95" />
               <folding>
                 <element signature="e#2272#2281#0" expanded="true" />
               </folding>
@@ -42,8 +43,8 @@
       <file leaf-file-name="create_cropped_event_tf_record.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/object_detection/create_cropped_event_tf_record.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="300">
+              <caret line="253" column="4" selection-start-line="253" selection-start-column="4" selection-end-line="253" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -1251,12 +1252,12 @@
       <workItem from="1498103118020" duration="5314000" />
       <workItem from="1498182556858" duration="8606000" />
       <workItem from="1498281958898" duration="9217000" />
-      <workItem from="1498341999179" duration="4383000" />
+      <workItem from="1498341999179" duration="4462000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="178035000" />
+    <option name="totallyTimeSpent" value="178114000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="773" extended-state="6" />
@@ -1668,14 +1669,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/object_detection/create_cropped_event_tf_record.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/object_detection/samples/event/faster_rcnn_resnet101_pets.config">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1441">
@@ -1684,10 +1677,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/object_detection/create_cropped_event_tf_record.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="253" column="4" selection-start-line="253" selection-start-column="4" selection-end-line="253" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/object_detection/create_event_tf_record.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1945">
-          <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+        <state relative-caret-position="356">
+          <caret line="324" column="0" selection-start-line="324" selection-start-column="0" selection-end-line="327" selection-end-column="95" />
           <folding>
             <element signature="e#2272#2281#0" expanded="true" />
           </folding>
