@@ -71,6 +71,44 @@ DIRECTORY_IMAGES = 'JPEGImages/'
 RANDOM_SEED = 4242
 
 ORIGINAL_IMAGE_SIZE = 2048
+CROPPED_IMAGE_SIZE = 1600
+START_X = (ORIGINAL_IMAGE_SIZE - CROPPED_IMAGE_SIZE) / 2
+START_Y = (ORIGINAL_IMAGE_SIZE - CROPPED_IMAGE_SIZE) / 2
+
+
+def _check_if_not_inside_cropped_image(bbox):
+
+    x1 = bbox[0]
+    y2 = bbox[1]
+    x2 = bbox[2]
+    y1 = bbox[3]
+
+    if x1 <= 0 or x1 >= CROPPED_IMAGE_SIZE:
+        return True
+
+    if x2 <= 0 or x2 >= CROPPED_IMAGE_SIZE:
+        return True
+
+    if y1 <= 0 or y1 >= CROPPED_IMAGE_SIZE:
+        return True
+
+    if y2 <= 0 or y2 >= CROPPED_IMAGE_SIZE:
+        return True
+
+    if y1 >= y2:
+        print(bbox)
+        return True
+
+    if x1 >= x2:
+        print(bbox)
+        return True
+
+    if any([np.isnan(i) for i in bbox]):
+        print(bbox)
+        return True
+
+    return False
+
 
 def read_event_records(path_to_records, dataset_type):
 
@@ -112,10 +150,15 @@ def read_event_records(path_to_records, dataset_type):
             bbox = tuples[4]
             bbox = [float(i) for i in bbox.split("-")]
 
+            bbox = [(((i / 2) - START_X) + 0.00001) for i in bbox]
+
+            if _check_if_not_inside_cropped_image(bbox[:]):
+                continue
+
             width = abs(bbox[0] - bbox[2])
             height = abs(bbox[1] - bbox[3])
 
-            if width < 16 or height < 16:
+            if width < 16*8 or height < 16*8:
                 continue
 
             if width > height:
@@ -126,7 +169,7 @@ def read_event_records(path_to_records, dataset_type):
             if ratio < 0.5:
                 continue
 
-            bbox = [(i/4096) for i in bbox]
+            bbox = [(i/CROPPED_IMAGE_SIZE) for i in bbox]
 
             image_name = os.path.join(path_to_records, tuples[5])
             if not image_name in bbox_map.keys():
@@ -150,6 +193,10 @@ def _check_if_exist(filename):
     return tf.gfile.Exists(filename)
 
 
+def _crop_image(img_data):
+    return img_data[START_X:START_X+CROPPED_IMAGE_SIZE, START_Y:START_Y+CROPPED_IMAGE_SIZE]
+
+
 def _create_multi_wavelength_image(base_filename):
 
     file131 = base_filename + "_131.jpg"
@@ -162,21 +209,26 @@ def _create_multi_wavelength_image(base_filename):
     img131 = Image.open(file131)
     img131.load()
     data131 = np.asarray(img131, dtype="uint8")
+    data131 = _crop_image(data131)
 
     img171 = Image.open(file171)
     img171.load()
     data171 = np.asarray(img171, dtype="uint8")
+    data171 = _crop_image(data171)
 
     img193 = Image.open(file193)
     img193.load()
     data193 = np.asarray(img193, dtype="uint8")
+    data193 = _crop_image(data193)
 
-    rgbArray = np.zeros((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE, 3), 'uint8')
+    rgbArray = np.zeros((CROPPED_IMAGE_SIZE, CROPPED_IMAGE_SIZE, 3), 'uint8')
     # rgbArray = np.zeros((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE, 3), 'uint8')
 
     rgbArray[..., 0] = data131
     rgbArray[..., 1] = data171
     rgbArray[..., 2] = data193
+    # img = Image.fromarray(rgbArray, mode="RGB")
+    # img.save("/Users/ahmetkucuk/Documents/cropped.jpg")
     return rgbArray
 
 
@@ -199,6 +251,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         return
 
     image = Image.fromarray(image, "RGB")
+    image.thumbnail((512, 512), Image.ANTIALIAS)
     image.save("temp.jpg")
 
     with tf.gfile.GFile("temp.jpg") as fid:
@@ -213,7 +266,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         raise ValueError("length of bboxes and labels are not same")
 
     # Read the XML annotation file.
-    shape = [ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE, 3]
+    shape = [512, 512, 3]
     # Find annotations.
     difficult_obj = []
     truncated = []
