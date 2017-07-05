@@ -127,6 +127,7 @@ def read_event_records(path_to_records, dataset_type):
                 continue
 
             bbox = tuples[4]
+            print(bbox)
             bbox = [float(i) for i in bbox.split("-")]
 
             width = abs(bbox[0] - bbox[2])
