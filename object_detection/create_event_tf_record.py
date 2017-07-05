@@ -105,6 +105,29 @@ def read_event_records(path_to_records, dataset_type):
                 if start_year != "2015":
                     continue
 
+            bbox = tuples[4]
+
+            bbox = [float(i) for i in bbox.split("-")]
+
+            width = abs(bbox[0] - bbox[2])
+            height = abs(bbox[1] - bbox[3])
+
+            if width < 16 or height < 16:
+                continue
+
+            if width > height:
+                ratio = height / width
+            else:
+                ratio = width / height
+
+            if ratio < 0.5:
+                continue
+
+            bbox = [(i/4096) for i in bbox]
+
+            if bbox == 'null':
+                continue
+
             label = 0
             label_txt = "none"
             if tuples[1] == "AR":
@@ -125,26 +148,6 @@ def read_event_records(path_to_records, dataset_type):
                 fl_count += 1
             else:
                 continue
-
-            bbox = tuples[4]
-            print(bbox)
-            bbox = [float(i) for i in bbox.split("-")]
-
-            width = abs(bbox[0] - bbox[2])
-            height = abs(bbox[1] - bbox[3])
-
-            if width < 16 or height < 16:
-                continue
-
-            if width > height:
-                ratio = height / width
-            else:
-                ratio = width / height
-
-            if ratio < 0.5:
-                continue
-
-            bbox = [(i/4096) for i in bbox]
 
             image_name = os.path.join(path_to_records, tuples[5])
             if not image_name in bbox_map.keys():
