@@ -82,6 +82,12 @@ def read_event_records(path_to_records, dataset_type):
     bbox_map = {}
     label_map = {}
     label_text_map = {}
+
+    ar_count = 0
+    ch_count = 0
+    sg_count = 0
+    fl_count = 0
+
     with open(os.path.join(path_to_records, "event_records.txt"), "r") as f:
 
         for l in f.readlines():
@@ -104,15 +110,19 @@ def read_event_records(path_to_records, dataset_type):
             if tuples[1] == "AR":
                 label = 1
                 label_txt = "ar"
+                ar_count += 1
             elif tuples[1] == "CH":
                 label = 2
                 label_txt = "ch"
+                ch_count += 1
             elif tuples[1] == "SG":
                 label = 3
                 label_txt = "sg"
+                sg_count += 1
             elif tuples[1] == "FL":
                 label = 4
                 label_txt = "fl"
+                fl_count += 1
             else:
                 continue
 
@@ -144,6 +154,11 @@ def read_event_records(path_to_records, dataset_type):
                 bbox_map[image_name].append(bbox)
                 label_map[image_name].append(label)
                 label_text_map[image_name].append(label_txt)
+
+    print('AR COUNT: ' + str(ar_count))
+    print('CH COUNT: ' + str(ch_count))
+    print('SG COUNT: ' + str(sg_count))
+    print('FL COUNT: ' + str(fl_count))
 
     for image in bbox_map.keys():
         images.append(image)
