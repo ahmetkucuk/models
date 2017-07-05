@@ -72,6 +72,7 @@ RANDOM_SEED = 4242
 
 ORIGINAL_IMAGE_SIZE = 2048
 
+
 def read_event_records(path_to_records, dataset_type):
 
     images = []
@@ -106,6 +107,12 @@ def read_event_records(path_to_records, dataset_type):
             elif tuples[1] == "CH":
                 label = 2
                 label_txt = "ch"
+            elif tuples[1] == "SG":
+                label = 3
+                label_txt = "sg"
+            elif tuples[1] == "FL":
+                label = 4
+                label_txt = "fl"
             else:
                 continue
 
