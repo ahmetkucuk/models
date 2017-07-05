@@ -107,6 +107,9 @@ def read_event_records(path_to_records, dataset_type):
 
             bbox = tuples[4]
 
+            if bbox == 'null':
+                continue
+
             bbox = [float(i) for i in bbox.split("-")]
 
             width = abs(bbox[0] - bbox[2])
@@ -125,8 +128,6 @@ def read_event_records(path_to_records, dataset_type):
 
             bbox = [(i/4096) for i in bbox]
 
-            if bbox == 'null':
-                continue
 
             label = 0
             label_txt = "none"
