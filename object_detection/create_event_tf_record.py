@@ -70,7 +70,7 @@ DIRECTORY_IMAGES = 'JPEGImages/'
 # TFRecords convertion parameters.
 RANDOM_SEED = 4242
 
-ORIGINAL_IMAGE_SIZE = 2048
+ORIGINAL_IMAGE_SIZE = 1024
 
 
 def read_event_records(path_to_records, dataset_type):
@@ -182,17 +182,17 @@ def _create_multi_wavelength_image(base_filename):
 
     img131 = Image.open(file131)
     img131.load()
-    img131.thumbnail((2048, 2048), Image.ANTIALIAS)
+    img131.thumbnail((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE), Image.ANTIALIAS)
     data131 = np.asarray(img131, dtype="uint8")
 
     img171 = Image.open(file171)
     img171.load()
-    img171.thumbnail((2048, 2048), Image.ANTIALIAS)
+    img171.thumbnail((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE), Image.ANTIALIAS)
     data171 = np.asarray(img171, dtype="uint8")
 
     img193 = Image.open(file193)
     img193.load()
-    img193.thumbnail((2048, 2048), Image.ANTIALIAS)
+    img193.thumbnail((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE), Image.ANTIALIAS)
     data193 = np.asarray(img193, dtype="uint8")
 
     rgbArray = np.zeros((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE, 3), 'uint8')
@@ -223,7 +223,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
         return
 
     image = Image.fromarray(image, "RGB")
-    image.thumbnail((2048, 2048), Image.ANTIALIAS)
+    image.thumbnail((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE), Image.ANTIALIAS)
     image.save("temp.jpg")
 
     with tf.gfile.GFile("temp.jpg") as fid:
