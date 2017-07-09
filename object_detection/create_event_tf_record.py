@@ -138,10 +138,6 @@ def read_event_records(path_to_records, dataset_type):
                 label = 2
                 label_txt = "ch"
                 ch_count += 1
-            elif tuples[1] == "SG":
-                label = 3
-                label_txt = "sg"
-                sg_count += 1
             else:
                 continue
 
