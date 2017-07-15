@@ -122,7 +122,7 @@ def read_event_records(path_to_records, dataset_type):
             else:
                 ratio = width / height
 
-            if ratio < 0.5:
+            if ratio < 0.1:
                 continue
 
             bbox = [(i/4096) for i in bbox]
