@@ -167,6 +167,26 @@ def _check_if_exist(filename):
     return tf.gfile.Exists(filename)
 
 
+def _create_single_wavelength_image(base_filename):
+    file193 = base_filename + "_193.jpg"
+
+    if not _check_if_exist(file193):
+        return None
+
+    img193 = Image.open(file193)
+    img193.load()
+    img193.thumbnail((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE), Image.ANTIALIAS)
+    data193 = np.asarray(img193, dtype="uint8")
+
+    rgbArray = np.zeros((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE, 3), 'uint8')
+    # rgbArray = np.zeros((ORIGINAL_IMAGE_SIZE, ORIGINAL_IMAGE_SIZE, 3), 'uint8')
+
+    rgbArray[..., 0] = data193
+    rgbArray[..., 1] = data193
+    rgbArray[..., 2] = data193
+    return rgbArray
+
+
 def _create_multi_wavelength_image(base_filename):
 
     file131 = base_filename + "_131.jpg"
@@ -213,7 +233,7 @@ def _process_image_and_create_example(filename, bboxes, labels, labels_txts):
     """
     #filename = "/Users/ahmetkucuk/Documents/Research/solim_class/Bbox_Data/2012_01_01_04_00_00_171.jpg"
 
-    image = _create_multi_wavelength_image(filename)
+    image = _create_single_wavelength_image(filename)
 
     if image is None:
         return
