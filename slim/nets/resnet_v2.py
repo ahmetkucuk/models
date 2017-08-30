@@ -115,7 +115,7 @@ def resnet_v2(inputs,
               global_pool=True,
               output_stride=None,
               include_root_block=True,
-              spatial_squeeze=False,
+              spatial_squeeze=True,
               reuse=None,
               scope=None):
   """Generator for v2 (preactivation) ResNet models.
@@ -158,6 +158,9 @@ def resnet_v2(inputs,
       results of an activation-less convolution.
     spatial_squeeze: if True, logits is of shape [B, C], if false logits is
         of shape [B, 1, 1, C], where B is batch_size and C is number of classes.
+        To use this parameter, the input images must be smaller than 300x300
+        pixels, in which case the output logit layer does not contain spatial
+        information and can be removed.
     reuse: whether or not the network and its variables should be reused. To be
       able to reuse 'scope' must be given.
     scope: Optional variable_scope.
@@ -207,16 +210,14 @@ def resnet_v2(inputs,
         if num_classes is not None:
           net = slim.conv2d(net, num_classes, [1, 1], activation_fn=None,
                             normalizer_fn=None, scope='logits')
-        if spatial_squeeze:
-          logits = tf.squeeze(net, [1, 2], name='SpatialSqueeze')
-        else:
-          logits = net
+          if spatial_squeeze:
+            net = tf.squeeze(net, [1, 2], name='SpatialSqueeze')
         # Convert end_points_collection into a dictionary of end_points.
         end_points = slim.utils.convert_collection_to_dict(
             end_points_collection)
         if num_classes is not None:
-          end_points['predictions'] = slim.softmax(logits, scope='predictions')
-        return logits, end_points
+          end_points['predictions'] = slim.softmax(net, scope='predictions')
+        return net, end_points
 resnet_v2.default_image_size = 224
 
 
@@ -250,7 +251,7 @@ def resnet_v2_50(inputs,
                  is_training=True,
                  global_pool=True,
                  output_stride=None,
-                 spatial_squeeze=False,
+                 spatial_squeeze=True,
                  reuse=None,
                  scope='resnet_v2_50'):
   """ResNet-50 model of [1]. See resnet_v2() for arg and return description."""
@@ -272,7 +273,7 @@ def resnet_v2_101(inputs,
                   is_training=True,
                   global_pool=True,
                   output_stride=None,
-                  spatial_squeeze=False,
+                  spatial_squeeze=True,
                   reuse=None,
                   scope='resnet_v2_101'):
   """ResNet-101 model of [1]. See resnet_v2() for arg and return description."""
@@ -294,7 +295,7 @@ def resnet_v2_152(inputs,
                   is_training=True,
                   global_pool=True,
                   output_stride=None,
-                  spatial_squeeze=False,
+                  spatial_squeeze=True,
                   reuse=None,
                   scope='resnet_v2_152'):
   """ResNet-152 model of [1]. See resnet_v2() for arg and return description."""
@@ -316,7 +317,7 @@ def resnet_v2_200(inputs,
                   is_training=True,
                   global_pool=True,
                   output_stride=None,
-                  spatial_squeeze=False,
+                  spatial_squeeze=True,
                   reuse=None,
                   scope='resnet_v2_200'):
   """ResNet-200 model of [2]. See resnet_v2() for arg and return description."""

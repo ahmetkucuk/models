@@ -66,8 +66,14 @@ slim = tf.contrib.slim
 
 
 @slim.add_arg_scope
-def bottleneck(inputs, depth, depth_bottleneck, stride, rate=1,
-               outputs_collections=None, scope=None):
+def bottleneck(inputs,
+               depth,
+               depth_bottleneck,
+               stride,
+               rate=1,
+               outputs_collections=None,
+               scope=None,
+               use_bounded_activations=False):
   """Bottleneck residual unit variant with BN after convolutions.
 
   This is the original residual unit proposed in [1]. See Fig. 1(a) of [2] for
@@ -86,6 +92,8 @@ def bottleneck(inputs, depth, depth_bottleneck, stride, rate=1,
     rate: An integer, rate for atrous convolution.
     outputs_collections: Collection to add the ResNet unit output.
     scope: Optional variable_scope.
+    use_bounded_activations: Whether or not to use bounded activations. Bounded
+      activations better lend themselves to quantized inference.
 
   Returns:
     The ResNet unit's output.
@@ -95,8 +103,12 @@ def bottleneck(inputs, depth, depth_bottleneck, stride, rate=1,
     if depth == depth_in:
       shortcut = resnet_utils.subsample(inputs, stride, 'shortcut')
     else:
-      shortcut = slim.conv2d(inputs, depth, [1, 1], stride=stride,
-                             activation_fn=None, scope='shortcut')
+      shortcut = slim.conv2d(
+          inputs,
+          depth, [1, 1],
+          stride=stride,
+          activation_fn=tf.nn.relu6 if use_bounded_activations else None,
+          scope='shortcut')
 
     residual = slim.conv2d(inputs, depth_bottleneck, [1, 1], stride=1,
                            scope='conv1')
@@ -105,7 +117,12 @@ def bottleneck(inputs, depth, depth_bottleneck, stride, rate=1,
     residual = slim.conv2d(residual, depth, [1, 1], stride=1,
                            activation_fn=None, scope='conv3')
 
-    output = tf.nn.relu(shortcut + residual)
+    if use_bounded_activations:
+      # Use clip_by_value to simulate bandpass activation.
+      residual = tf.clip_by_value(residual, -6.0, 6.0)
+      output = tf.nn.relu6(shortcut + residual)
+    else:
+      output = tf.nn.relu(shortcut + residual)
 
     return slim.utils.collect_named_outputs(outputs_collections,
                                             sc.original_name_scope,
@@ -119,7 +136,7 @@ def resnet_v1(inputs,
               global_pool=True,
               output_stride=None,
               include_root_block=True,
-              spatial_squeeze=False,
+              spatial_squeeze=True,
               reuse=None,
               scope=None):
   """Generator for v1 ResNet models.
@@ -161,6 +178,9 @@ def resnet_v1(inputs,
       max-pooling, if False excludes it.
     spatial_squeeze: if True, logits is of shape [B, C], if false logits is
         of shape [B, 1, 1, C], where B is batch_size and C is number of classes.
+        To use this parameter, the input images must be smaller than 300x300
+        pixels, in which case the output logit layer does not contain spatial
+        information and can be removed.
     reuse: whether or not the network and its variables should be reused. To be
       able to reuse 'scope' must be given.
     scope: Optional variable_scope.
@@ -200,16 +220,14 @@ def resnet_v1(inputs,
         if num_classes is not None:
           net = slim.conv2d(net, num_classes, [1, 1], activation_fn=None,
                             normalizer_fn=None, scope='logits')
-        if spatial_squeeze:
-          logits = tf.squeeze(net, [1, 2], name='SpatialSqueeze')
-        else:
-          logits = net
+          if spatial_squeeze:
+            net = tf.squeeze(net, [1, 2], name='SpatialSqueeze')
         # Convert end_points_collection into a dictionary of end_points.
         end_points = slim.utils.convert_collection_to_dict(
             end_points_collection)
         if num_classes is not None:
-          end_points['predictions'] = slim.softmax(logits, scope='predictions')
-        return logits, end_points
+          end_points['predictions'] = slim.softmax(net, scope='predictions')
+        return net, end_points
 resnet_v1.default_image_size = 224
 
 
