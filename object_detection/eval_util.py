@@ -54,7 +54,8 @@ def evaluate_detection_results_pascal_voc(result_lists,
                                           categories,
                                           label_id_offset=0,
                                           iou_thres=0.5,
-                                          corloc_summary=False):
+                                          corloc_summary=True,
+                                          simple_stats=True):
   """Computes Pascal VOC detection metrics given groundtruth and detections.
 
   This function computes Pascal VOC metrics. This function by default
@@ -139,7 +140,7 @@ def evaluate_detection_results_pascal_voc(result_lists,
         image_id, result_lists['detection_boxes'][idx],
         result_lists['detection_scores'][idx],
         result_lists['detection_classes'][idx] - label_id_offset)
-  per_class_ap, mean_ap, _, _, per_class_corloc, mean_corloc = (
+  per_class_ap, mean_ap, precisions_per_class, recalls_per_class, per_class_corloc, mean_corloc = (
       evaluator.evaluate())
 
   metrics = {'Precision/mAP@{}IOU'.format(iou_thres): mean_ap}
@@ -158,6 +159,10 @@ def evaluate_detection_results_pascal_voc(result_lists,
             'PerformanceByCategory/CorLoc@{}IOU/{}'.format(
                 iou_thres, category_index[idx]['name']))
         metrics[display_name] = per_class_corloc[idx]
+
+  if simple_stats:
+      logging.info('Log Precisions per class %s', str(precisions_per_class))
+
   return metrics
 
 
