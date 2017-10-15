@@ -140,8 +140,17 @@ def evaluate_detection_results_pascal_voc(result_lists,
         image_id, result_lists['detection_boxes'][idx],
         result_lists['detection_scores'][idx],
         result_lists['detection_classes'][idx] - label_id_offset)
-  per_class_ap, mean_ap, precisions_per_class, recalls_per_class, per_class_corloc, mean_corloc = (
+  (per_class_ap, mean_ap, precisions_per_class, recalls_per_class,
+   per_class_corloc, mean_corloc, num_gt_instances_per_class) = (
       evaluator.evaluate())
+
+  metrics = {'GroundTruthInstanceCount/': num_gt_instances_per_class}
+  category_index = label_map_util.create_category_index(categories)
+  for idx in range(num_gt_instances_per_class.size):
+    if idx in category_index:
+        display_name = ('GroundTruthInstanceCount/{}'
+                        .format(category_index[idx]['name']))
+        metrics[display_name] = per_class_ap[idx]
 
   metrics = {'Precision/mAP@{}IOU'.format(iou_thres): mean_ap}
   category_index = label_map_util.create_category_index(categories)

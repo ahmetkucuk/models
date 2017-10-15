@@ -216,7 +216,7 @@ class ObjectDetectionEvaluation(object):
     mean_corloc = np.nanmean(self.corloc_per_class)
     return (self.average_precision_per_class, mean_ap,
             self.precisions_per_class, self.recalls_per_class,
-            self.corloc_per_class, mean_corloc)
+            self.corloc_per_class, mean_corloc, self.num_gt_instances_per_class)
 
   def get_eval_result(self):
     return EvalResult(self.average_precision_per_class,
