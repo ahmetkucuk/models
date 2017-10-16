@@ -150,10 +150,16 @@ def evaluate_detection_results_pascal_voc(result_lists,
     if idx in category_index:
         display_name = ('GroundTruthInstanceCount/{}'
                         .format(category_index[idx]['name']))
-        metrics[display_name] = per_class_ap[idx]
+        metrics[display_name] = num_gt_instances_per_class[idx]
 
-  metrics = {'Precision/mAP@{}IOU'.format(iou_thres): mean_ap}
-  category_index = label_map_util.create_category_index(categories)
+  metrics['Recall/'] = num_gt_instances_per_class
+  for idx in range(recalls_per_class.size):
+      if idx in category_index:
+          display_name = ('Recall/{}'
+                          .format(category_index[idx]['name']))
+          metrics[display_name] = recalls_per_class[idx]
+
+  metrics['Precision/mAP@{}IOU'.format(iou_thres)] = mean_ap
   for idx in range(per_class_ap.size):
     if idx in category_index:
       display_name = ('PerformanceByCategory/mAP@{}IOU/{}'
