@@ -144,14 +144,18 @@ def evaluate_detection_results_pascal_voc(result_lists,
    per_class_corloc, mean_corloc, num_gt_instances_per_class) = (
       evaluator.evaluate())
 
-  metrics = {'GroundTruthInstanceCount/': num_gt_instances_per_class}
   category_index = label_map_util.create_category_index(categories)
-  for idx in range(num_gt_instances_per_class.size):
-    if idx in category_index:
-        display_name = ('GroundTruthInstanceCount/{}'
-                        .format(category_index[idx]['name']))
-        metrics[display_name] = num_gt_instances_per_class[idx]
 
+  logging.info("NUM of GT: %s", str(num_gt_instances_per_class))
+  logging.info("RECALL PER CLASS: %s", str(recalls_per_class))
+  # metrics = {'GroundTruthInstanceCount/': num_gt_instances_per_class}
+  # for idx in range(num_gt_instances_per_class.size):
+  #   if idx in category_index:
+  #       display_name = ('GroundTruthInstanceCount/{}'
+  #                       .format(category_index[idx]['name']))
+  #       metrics[display_name] = num_gt_instances_per_class[idx]
+  #
+  metrics = {}
   metrics['Recall/'] = recalls_per_class
   for idx in range(len(recalls_per_class)):
       if idx in category_index:
