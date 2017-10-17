@@ -156,7 +156,6 @@ def evaluate_detection_results_pascal_voc(result_lists,
   #       metrics[display_name] = num_gt_instances_per_class[idx]
   #
   metrics = {}
-  metrics['Recall/'] = recalls_per_class
   for idx in range(len(recalls_per_class)):
       if idx in category_index:
           display_name = ('Recall/{}'
