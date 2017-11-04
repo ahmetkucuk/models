@@ -146,8 +146,8 @@ def evaluate_detection_results_pascal_voc(result_lists,
 
   category_index = label_map_util.create_category_index(categories)
 
-  logging.info("NUM of GT: %s", str(num_gt_instances_per_class))
-  logging.info("RECALL PER CLASS: %s", str(recalls_per_class))
+  logging.info("NUM of GT: {}".format(str(num_gt_instances_per_class)))
+  logging.info("RECALL PER CLASS: {}".format(str(recalls_per_class)))
   # metrics = {'GroundTruthInstanceCount/': num_gt_instances_per_class}
   # for idx in range(num_gt_instances_per_class.size):
   #   if idx in category_index:
@@ -156,9 +156,9 @@ def evaluate_detection_results_pascal_voc(result_lists,
   #       metrics[display_name] = num_gt_instances_per_class[idx]
   #
   metrics = {}
-  for idx in range(len(recalls_per_class)):
+  for idx in range(recalls_per_class.size):
       if idx in category_index:
-          display_name = ('Recall/{}'
+          display_name = ('PerformanceByCategory/Precision/{}'
                           .format(category_index[idx]['name']))
           metrics[display_name] = recalls_per_class[idx]
 
