@@ -149,18 +149,18 @@ def evaluate_detection_results_pascal_voc(result_lists,
   logging.info("NUM of GT: {}".format(str(num_gt_instances_per_class)))
   logging.info("RECALL PER CLASS: {}".format(str(recalls_per_class)))
   # metrics = {'GroundTruthInstanceCount/': num_gt_instances_per_class}
-  # for idx in range(num_gt_instances_per_class.size):
-  #   if idx in category_index:
-  #       display_name = ('GroundTruthInstanceCount/{}'
-  #                       .format(category_index[idx]['name']))
-  #       metrics[display_name] = num_gt_instances_per_class[idx]
-  #
   metrics = {}
-  for idx in range(recalls_per_class.size):
-      if idx in category_index:
-          display_name = ('PerformanceByCategory/Precision/{}'
-                          .format(category_index[idx]['name']))
-          metrics[display_name] = recalls_per_class[idx]
+  for idx in range(num_gt_instances_per_class.size):
+    if idx in category_index:
+        display_name = ('GroundTruthInstanceCount/{}'
+                        .format(category_index[idx]['name']))
+        metrics[display_name] = num_gt_instances_per_class[idx]
+
+  # for idx in range(recalls_per_class.size):
+  #     if idx in category_index:
+  #         display_name = ('PerformanceByCategory/Precision/{}'
+  #                         .format(category_index[idx]['name']))
+  #         metrics[display_name] = recalls_per_class[idx]
 
   metrics['Precision/mAP@{}IOU'.format(iou_thres)] = mean_ap
   for idx in range(per_class_ap.size):
