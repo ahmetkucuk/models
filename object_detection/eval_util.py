@@ -141,7 +141,7 @@ def evaluate_detection_results_pascal_voc(result_lists,
         result_lists['detection_scores'][idx],
         result_lists['detection_classes'][idx] - label_id_offset)
   (per_class_ap, mean_ap, precisions_per_class, recalls_per_class,
-   per_class_corloc, mean_corloc, num_gt_instances_per_class) = (
+   per_class_corloc, mean_corloc, num_gt_instances_per_class, accuracy_per_class) = (
       evaluator.evaluate())
 
   category_index = label_map_util.create_category_index(categories)
@@ -156,11 +156,11 @@ def evaluate_detection_results_pascal_voc(result_lists,
                         .format(category_index[idx]['name']))
         metrics[display_name] = num_gt_instances_per_class[idx]
 
-  # for idx in range(recalls_per_class.size):
-  #     if idx in category_index:
-  #         display_name = ('PerformanceByCategory/Precision/{}'
-  #                         .format(category_index[idx]['name']))
-  #         metrics[display_name] = recalls_per_class[idx]
+  for idx in range(accuracy_per_class.size):
+      if idx in category_index:
+          display_name = ('PerformanceByCategory/Accuracy/{}'
+                          .format(category_index[idx]['name']))
+          metrics[display_name] = accuracy_per_class[idx]
 
   metrics['Precision/mAP@{}IOU'.format(iou_thres)] = mean_ap
   for idx in range(per_class_ap.size):

@@ -65,7 +65,11 @@ def compute_precision_recall(scores, labels, num_gt):
   precision = cum_true_positives.astype(float) / (
       cum_true_positives + cum_false_positives)
   recall = cum_true_positives.astype(float) / num_gt
-  return precision, recall
+
+  tp_sum = np.sum(true_positive_labels)
+  accuracy = tp_sum.astype(float) / num_gt
+
+  return precision, recall, accuracy
 
 
 def compute_average_precision(precision, recall):

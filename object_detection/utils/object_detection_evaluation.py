@@ -64,6 +64,8 @@ class ObjectDetectionEvaluation(object):
     self.recalls_per_class = []
     self.corloc_per_class = np.ones(self.num_class, dtype=float)
 
+    self.accuracy_per_class = []
+
   def clear_detections(self):
     self.detection_keys = {}
     self.scores_per_class = [[] for _ in range(self.num_class)]
@@ -200,10 +202,11 @@ class ObjectDetectionEvaluation(object):
         continue
       scores = np.concatenate(self.scores_per_class[class_index])
       tp_fp_labels = np.concatenate(self.tp_fp_labels_per_class[class_index])
-      precision, recall = metrics.compute_precision_recall(
+      precision, recall, accuracy = metrics.compute_precision_recall(
           scores, tp_fp_labels, self.num_gt_instances_per_class[class_index])
       self.precisions_per_class.append(precision)
       self.recalls_per_class.append(recall)
+      self.accuracy_per_class.append(accuracy)
       average_precision = metrics.compute_average_precision(precision, recall)
       self.average_precision_per_class[class_index] = average_precision
 
@@ -215,7 +218,8 @@ class ObjectDetectionEvaluation(object):
     mean_corloc = np.nanmean(self.corloc_per_class)
     return (self.average_precision_per_class, mean_ap,
             self.precisions_per_class, self.recalls_per_class,
-            self.corloc_per_class, mean_corloc, self.num_gt_instances_per_class)
+            self.corloc_per_class, mean_corloc, self.num_gt_instances_per_class,
+            self.accuracy_per_class)
 
   def get_eval_result(self):
     return EvalResult(self.average_precision_per_class,

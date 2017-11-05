@@ -48,7 +48,7 @@ class MetricsTest(tf.test.TestCase):
     accumulated_tp_count = np.array([0, 1, 1, 2, 2, 3], dtype=float)
     expected_precision = accumulated_tp_count / np.array([1, 2, 3, 4, 5, 6])
     expected_recall = accumulated_tp_count / num_gt
-    precision, recall = metrics.compute_precision_recall(scores, labels, num_gt)
+    precision, recall, _ = metrics.compute_precision_recall(scores, labels, num_gt)
     self.assertAllClose(precision, expected_precision)
     self.assertAllClose(recall, expected_recall)
 
@@ -68,7 +68,7 @@ class MetricsTest(tf.test.TestCase):
     labels = np.array([0, 0, 0, 0, 0, 0], dtype=bool)
     expected_precision = None
     expected_recall = None
-    precision, recall = metrics.compute_precision_recall(scores, labels, num_gt)
+    precision, recall, _ = metrics.compute_precision_recall(scores, labels, num_gt)
     self.assertEquals(precision, expected_precision)
     self.assertEquals(recall, expected_recall)
     ap = metrics.compute_average_precision(precision, recall)
