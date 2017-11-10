@@ -75,6 +75,7 @@ class ObjectDetectionEvaluation(object):
     self.precisions_per_class = []
     self.recalls_per_class = []
     self.corloc_per_class = np.ones(self.num_class, dtype=float)
+    self.accuracy_per_class = []
 
   def add_single_ground_truth_image_info(self,
                                          image_key,
