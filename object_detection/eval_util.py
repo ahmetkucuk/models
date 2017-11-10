@@ -150,13 +150,13 @@ def evaluate_detection_results_pascal_voc(result_lists,
   logging.info("RECALL PER CLASS: {}".format(str(recalls_per_class)))
   # metrics = {'GroundTruthInstanceCount/': num_gt_instances_per_class}
   metrics = {}
-  for idx in range(num_gt_instances_per_class.size):
+  for idx in range(len(num_gt_instances_per_class)):
     if idx in category_index:
         display_name = ('GroundTruthInstanceCount/{}'
                         .format(category_index[idx]['name']))
         metrics[display_name] = num_gt_instances_per_class[idx]
 
-  for idx in range(accuracy_per_class.size):
+  for idx in range(len(accuracy_per_class)):
       if idx in category_index:
           display_name = ('PerformanceByCategory/Accuracy/{}'
                           .format(category_index[idx]['name']))
