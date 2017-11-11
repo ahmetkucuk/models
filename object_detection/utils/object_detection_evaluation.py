@@ -208,7 +208,7 @@ class ObjectDetectionEvaluation(object):
           scores, tp_fp_labels, self.num_gt_instances_per_class[class_index])
       self.precisions_per_class.append(precision)
       self.recalls_per_class.append(recall)
-      self.accuracy_per_class.append(accuracy)
+      self.accuracy_per_class[class_index] = accuracy
       average_precision = metrics.compute_average_precision(precision, recall)
       self.average_precision_per_class[class_index] = average_precision
 
