@@ -64,7 +64,8 @@ class ObjectDetectionEvaluation(object):
     self.recalls_per_class = []
     self.corloc_per_class = np.ones(self.num_class, dtype=float)
 
-    self.accuracy_per_class = []
+    self.accuracy_per_class = np.empty(self.num_class, dtype=float)
+    self.accuracy_per_class.fill(np.nan)
 
   def clear_detections(self):
     self.detection_keys = {}
@@ -75,7 +76,7 @@ class ObjectDetectionEvaluation(object):
     self.precisions_per_class = []
     self.recalls_per_class = []
     self.corloc_per_class = np.ones(self.num_class, dtype=float)
-    self.accuracy_per_class = []
+    self.accuracy_per_class = np.zeros(self.num_class, dtype=float)
 
   def add_single_ground_truth_image_info(self,
                                          image_key,
