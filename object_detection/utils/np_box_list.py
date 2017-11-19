@@ -117,6 +117,19 @@ class BoxList(object):
     x_max = box_coordinates[:, 3]
     return [y_min, x_min, y_max, x_max]
 
+  def get_area(self):
+    """Get area of boxes.
+
+    Returns:
+     a list of 4 1-d numpy arrays [y_min, x_min, y_max, x_max]
+    """
+    box_coordinates = self.get()
+    y_min = box_coordinates[:, 0]
+    x_min = box_coordinates[:, 1]
+    y_max = box_coordinates[:, 2]
+    x_max = box_coordinates[:, 3]
+    return (y_max - y_min) * (x_max - x_min)
+
   def _is_valid_boxes(self, data):
     """Check whether data fullfills the format of N*[ymin, xmin, ymax, xmin].
 

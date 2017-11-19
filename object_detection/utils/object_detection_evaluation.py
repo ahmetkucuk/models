@@ -56,6 +56,7 @@ class ObjectDetectionEvaluation(object):
 
     self.detection_keys = set()
     self.scores_per_class = [[] for _ in range(self.num_class)]
+    self.areas_per_class = [[] for _ in range(self.num_class)]
     self.tp_fp_labels_per_class = [[] for _ in range(self.num_class)]
     self.num_images_correctly_detected_per_class = np.zeros(self.num_class)
     self.average_precision_per_class = np.empty(self.num_class, dtype=float)
@@ -70,6 +71,7 @@ class ObjectDetectionEvaluation(object):
   def clear_detections(self):
     self.detection_keys = {}
     self.scores_per_class = [[] for _ in range(self.num_class)]
+    self.areas_per_class = [[] for _ in range(self.num_class)]
     self.tp_fp_labels_per_class = [[] for _ in range(self.num_class)]
     self.num_images_correctly_detected_per_class = np.zeros(self.num_class)
     self.average_precision_per_class = np.zeros(self.num_class, dtype=float)
@@ -150,14 +152,16 @@ class ObjectDetectionEvaluation(object):
       groundtruth_boxes = np.empty(shape=[0, 4], dtype=float)
       groundtruth_class_labels = np.array([], dtype=int)
       groundtruth_is_difficult_list = np.array([], dtype=bool)
-    scores, tp_fp_labels, is_class_correctly_detected_in_image = (
+    scores, tp_fp_labels, is_class_correctly_detected_in_image, gt_boxes = (
         self.per_image_eval.compute_object_detection_metrics(
             detected_boxes, detected_scores, detected_class_labels,
             groundtruth_boxes, groundtruth_class_labels,
             groundtruth_is_difficult_list))
+    print(gt_boxes)
     for i in range(self.num_class):
       self.scores_per_class[i].append(scores[i])
       self.tp_fp_labels_per_class[i].append(tp_fp_labels[i])
+      self.areas_per_class[i].append(gt_boxes[i])
     self.num_images_correctly_detected_per_class += is_class_correctly_detected_in_image
 
   def _update_ground_truth_statistics(self, groundtruth_class_labels,
@@ -203,6 +207,7 @@ class ObjectDetectionEvaluation(object):
       if self.num_gt_instances_per_class[class_index] == 0:
         continue
       scores = np.concatenate(self.scores_per_class[class_index])
+      areas = np.concatenate(self.areas_per_class[class_index])
       tp_fp_labels = np.concatenate(self.tp_fp_labels_per_class[class_index])
       precision, recall, accuracy = metrics.compute_precision_recall(
           scores, tp_fp_labels, self.num_gt_instances_per_class[class_index])

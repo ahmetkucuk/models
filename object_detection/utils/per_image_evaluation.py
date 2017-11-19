@@ -82,7 +82,7 @@ class PerImageEvaluation(object):
     detected_boxes, detected_scores, detected_class_labels = (
         self._remove_invalid_boxes(detected_boxes, detected_scores,
                                    detected_class_labels))
-    scores, tp_fp_labels = self._compute_tp_fp(
+    scores, tp_fp_labels, gt_areas = self._compute_tp_fp(
         detected_boxes, detected_scores, detected_class_labels,
         groundtruth_boxes, groundtruth_class_labels,
         groundtruth_is_difficult_lists)
@@ -185,6 +185,7 @@ class PerImageEvaluation(object):
     """
     result_scores = []
     result_tp_fp_labels = []
+    result_areas = []
     for i in range(self.num_groundtruth_classes):
       gt_boxes_at_ith_class = groundtruth_boxes[(groundtruth_class_labels == i
                                                 ), :]
@@ -193,12 +194,13 @@ class PerImageEvaluation(object):
       detected_boxes_at_ith_class = detected_boxes[(detected_class_labels == i
                                                    ), :]
       detected_scores_at_ith_class = detected_scores[detected_class_labels == i]
-      scores, tp_fp_labels = self._compute_tp_fp_for_single_class(
+      scores, tp_fp_labels, gt_areas = self._compute_tp_fp_for_single_class(
           detected_boxes_at_ith_class, detected_scores_at_ith_class,
           gt_boxes_at_ith_class, groundtruth_is_difficult_list_at_ith_class)
       result_scores.append(scores)
       result_tp_fp_labels.append(tp_fp_labels)
-    return result_scores, result_tp_fp_labels
+      result_areas.append(gt_areas)
+    return result_scores, result_tp_fp_labels, result_areas
 
   def _remove_invalid_boxes(self, detected_boxes, detected_scores,
                             detected_class_labels):
@@ -245,6 +247,7 @@ class PerImageEvaluation(object):
     max_overlap_gt_ids = np.argmax(iou, axis=1)
     is_gt_box_detected = np.zeros(gt_boxlist.num_boxes(), dtype=bool)
     tp_fp_labels = np.zeros(detected_boxlist.num_boxes(), dtype=bool)
+    gt_box_areas = gt_boxlist.get_area()
     is_matched_to_difficult_box = np.zeros(
         detected_boxlist.num_boxes(), dtype=bool)
     for i in range(detected_boxlist.num_boxes()):
@@ -257,4 +260,4 @@ class PerImageEvaluation(object):
         else:
           is_matched_to_difficult_box[i] = True
     return scores[~is_matched_to_difficult_box], tp_fp_labels[
-        ~is_matched_to_difficult_box]
+        ~is_matched_to_difficult_box], gt_box_areas
